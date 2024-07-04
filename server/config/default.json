@@ -1,0 +1,12 @@
+{
+  "MONGOURI": "mongodb+srv://lanzkarthi:jRDZ2NLZfUgZ3hvr@cluster0.retvvoh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
+  "JWT_TOKEN_KEY": "KJ9BK0DF098353NF09E230RH2039RH",
+  "BASE_URL": "http://localhost:3000",
+  "CLIENT_URL":"http://localhost:5173",
+  "emailConfig": {
+    "user": "lanzkarthi@gmail.com",
+    "pass": "jukb owyr aosp unic"
+  }
+}
+
+
