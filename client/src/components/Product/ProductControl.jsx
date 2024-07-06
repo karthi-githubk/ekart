@@ -142,7 +142,7 @@ function ProductControl() {
                     Product Name: {product.name}
                   </Typography>
                   <img
-                    src={`http://localhost:5005/uploads/product/${product.image[0]}`}
+                    src={`https://ekart-57l0.onrender.com/uploads/product/${product.image[0]}`}
                     alt={product.name}
                     style={{
                       maxWidth: "100%",
