@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {createCategory,editCategory,getAllCategories,getCategoryById,deleteCategory} = require('../controllers/category');
 
-// Define routes
+
 router.post('/categories/create', createCategory);
 router.put('/categories/edit/:id', editCategory);
 router.get('/categories/getAll', getAllCategories);

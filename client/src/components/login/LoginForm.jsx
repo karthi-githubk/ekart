@@ -42,18 +42,15 @@ const LoginForm = () => {
 
  
   const handleRoleBasedRouting = (userRole) => {
-    switch (userRole) {
-      case "admin":
-        navigate("/ekart/admin/dashboard");
-        break;
-      case "customer":
-        navigate("/");
-        break;
-      default:
-        // Handle other roles or scenarios here
-        break;
+    if (userRole === "admin") {
+      navigate("/ekart/admin/dashboard");
+    } else if (userRole === "customer") {
+      navigate("/");
+    } else {
+      navigate("/"); 
     }
   };
+  
 
   const validationSchema = yup.object({
     email: yup.string("Enter your email").required("Email is required"),

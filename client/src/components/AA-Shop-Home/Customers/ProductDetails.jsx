@@ -23,6 +23,9 @@ import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import { addToCart } from "../../redux/slices/Items/cart";
 import { selectUserInfo } from "../../redux/slices/user/signin";
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import { addToWishlist } from "../../redux/slices/Items/wishlist";
+
 
 
 function ProductDetails() {
@@ -32,6 +35,7 @@ function ProductDetails() {
   const loading = useSelector(selectProductsLoading);
   const products = useSelector(selectProducts);
   const [expanded, setExpanded] = useState(false);
+  const [openWishlistSnackbar, setOpenWishlistSnackbar] = useState(false);
   const [openCartSnackbar, setOpenCartSnackbar] = useState(false);
 
   useEffect(() => {
@@ -60,8 +64,19 @@ function ProductDetails() {
     if (reason === "clickaway") {
       return;
     }
-
+    setOpenWishlistSnackbar(false);
     setOpenCartSnackbar(false);
+  };
+
+  const handleAddToWishlist = (product) => {
+    if (!userInfo) {
+      // User not signed in
+      alert("Please sign in to add to wishlist!");
+      return;
+    }
+
+    dispatch(addToWishlist(product));
+    setOpenWishlistSnackbar(true);
   };
 
   const handleAddToCart = (product) => {
@@ -80,7 +95,7 @@ function ProductDetails() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           {/* Left Side: Product Image */}
-          <Card>
+         
             {productImage && (
               <CardMedia
                 component="img"
@@ -88,13 +103,14 @@ function ProductDetails() {
                 image={`http://localhost:5005/uploads/product/${productImage}`}
                 alt={productDetails.name}
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "500px",
-                  objectFit: "cover",
+                  objectFit: "contain",
+                  height: "300px",
+                  width: "100%",
+                  padding: "10px",
                 }}
               />
             )}
-          </Card>
+          
         </Grid>
         <Grid item xs={12} md={6}>
           {/* Right Side: Product Details */}
@@ -106,6 +122,19 @@ function ProductDetails() {
               <Typography variant="h4" gutterBottom>
                 {productDetails.name}
               </Typography>
+              <div>
+                <Rating
+                  name="product-rating"
+                  value={productDetails.ratings}
+                  precision={0.5}
+                  readOnly
+                  sx={{
+                    "& .MuiRating-iconFilled": {
+                      color: "#ffb400",
+                    },
+                  }}
+                />
+              </div>
               <Typography variant="h6">
                 {expanded
                   ? productDetails.description
@@ -122,41 +151,61 @@ function ProductDetails() {
               <Typography variant="h6">
                 Stocks: {productDetails.stock}
               </Typography>
-              <div>
-                <Rating
-                  name="product-rating"
-                  value={productDetails.ratings}
-                  precision={0.5}
-                  readOnly
-                  sx={{
-                    "& .MuiRating-iconFilled": {
-                      color: "#ffb400",
-                    },
-                  }}
-                />
-              </div>
-              <div  style={{
-                      
-                      marginTop: "10px",
-                    }}>
-                <Button
-                  startIcon={<ShoppingCart />}
-                  color="error"
-                  variant="contained"
-                  style={{
-                    fontSize: "0.75rem",
-                    padding: "4px 8px",
-                   width:'200px',
-                   height:'40px',
-                   backgroundColor:'#f53b57'
-                  }}
-                  onClick={() => handleAddToCart(productDetails)}
-                >
-                  Add To Cart
-                </Button>
-              </div>
+             
+              <Grid container spacing={3} mt={2} justifyContent="space-between" alignItems="center">
+                <Grid item xs={12} sm={12} md={6}>
+                  <Button
+                    startIcon={<FavoriteBorder />}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: '#f53b57',
+                      color: '#ffffff'
+                    }}
+                    onClick={() => handleAddToWishlist(productDetails)}
+                  >
+                    Add To Wishlist
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={12} md={6}>
+                  <Button
+                    startIcon={<ShoppingCart />}
+                    color="error"
+                    variant="contained"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: '#5352ed'
+                    }}
+                    onClick={() => handleAddToCart(productDetails)}
+                  >
+                    Add To Cart
+                  </Button>
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
+          <Snackbar
+          open={openWishlistSnackbar}
+          autoHideDuration={6000}
+          onClose={(event, reason) => handleSnackbarClose(reason)}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          TransitionComponent={Slide}
+          sx={{ height: "80px" }}
+        >
+          <Alert
+            onClose={() => handleSnackbarClose("snackbar")}
+            severity="success"
+            variant="filled"
+            sx={{
+              width: "400px",
+              backgroundColor: "#4cd137",
+              color: "#fff",
+            }}
+          >
+            Product Added to Wishlist Successfully!
+          </Alert>
+        </Snackbar>
           <Snackbar
             open={openCartSnackbar}
             autoHideDuration={6000}

@@ -49,8 +49,7 @@ exports.createUser = async (req, res) => {
           </div>
           <div style="padding: 20px;">
             <h2 style="color: #4CAF50;">Welcome to eKart, ${name}!</h2>
-            <p>Thank you for signing up with eKart. We're excited to have you on board!</p>
-            <p>Your credentials:</p>
+            <h1 style="color: black; text-transform: uppercase; letter-spacing: 2px; text-align: center; font-weight: bold;">Thank you for signing up with eKart. We're excited to have you on board!</h1>
             <p><strong>Email:</strong> ${email}</p>
             
             <!-- Section 1: Purchases -->
@@ -59,33 +58,33 @@ exports.createUser = async (req, res) => {
               <div style="display: flex; flex-wrap: wrap;">
 
                 
-                <div style="background-color: #D8EFD3; border: 1px solid #ffc107; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
+                <div style="background-color: #dfe4ea; border: 1px solid #57606f; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
                   <img src="https://a.storyblok.com/f/165154/1280x720/a4c06ff7b1/01_hero-image_20-trending-ecommerce-products-to-sell-in-2023.jpg/m/" alt="Product 1" style="width: 100%; border-radius: 5px;">
                   <p style="font-weight: bold; margin-top: 10px;">Dress</p>
-                  <p style="color: #4CAF50; font-weight: bold;">$19.99</p>
+                  <p style="color: #4CAF50; font-weight: bold;">₹1999.99</p>
                 </div>
 
-                 <div style="background-color: #D8EFD3; border: 1px solid #ffc107; border-radius: 5px; padding: 10px; margin: 10px; width: 200px;height:200px">
+                 <div style="background-color: #D8EFD3; border: 1px solid #57606f; border-radius: 5px; padding: 10px; margin: 10px; width: 200px;height:200px">
                   <img src="https://images.autods.com/OfficialSite/New/20201103091044/The-Best-10-Trending-Tech-Gadgets-Dropshipping-Products-To-Sell-in-2021.png" alt="Product 2" style="width: 100%; border-radius: 5px;">
                   <p style="font-weight: bold; margin-top: 10px;">Watches</p>
-                  <p style="color: #4CAF50; font-weight: bold;">$19.99</p>
+                  <p style="color: #4CAF50; font-weight: bold;">₹3456.99</p>
                 </div>
 
                 
 
       
                 <!-- Product Card 2 -->
-                <div style="background-color: #D8EFD3; border: 1px solid #ffc107; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
+                <div style="background-color: #dfe4ea; border: 1px solid #57606f; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6yduxv4MBXeSiR-YCcAvn7RNlCYhXZEuvfA&s" alt="Product 2" style="width: 100%; border-radius: 5px;">
                   <p style="font-weight: bold; margin-top: 10px;">Watches</p>
-                  <p style="color: #4CAF50; font-weight: bold;">$19.99</p>
+                  <p style="color: #4CAF50; font-weight: bold;">₹19000</p>
                 </div>
       
                 <!-- Product Card 3 -->
-                <div style="background-color: #D8EFD3; border: 1px solid #ffc107; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
-                  <img src="https://5.imimg.com/data5/SELLER/Default/2021/4/XM/RR/NM/122175801/oneplus9-1-500x500.jpg" alt="Product 3" style="width: 100%; border-radius: 5px;">
+                <div style="background-color: #D8EFD3; border: 1px solid #57606f; border-radius: 5px; padding: 10px; margin: 10px; width: 200px; height:200px">
+                  <img src="https://in-exstatic-vivofs.vivo.com/gdHFRinHEMrj3yPG/1711104354021/f91329d65e0c0558e4b1964cc5d080dd.jpg" alt="Product 3" style="width: 100%; border-radius: 5px;">
                   <p style="font-weight: bold; margin-top: 10px;">Mobile's</p>
-                  <p style="color: #4CAF50; font-weight: bold;">$24.99</p>
+                  <p style="color: #4CAF50; font-weight: bold;">₹24000</p>
                 </div>
               </div>
             </div>
@@ -93,7 +92,7 @@ exports.createUser = async (req, res) => {
   <p style="text-transform: uppercase; letter-spacing: 7px; text-align: center; font-weight: bold;">Happy Shopping!</p>      
             <!-- Section 3: Additional Image -->
             <div style="border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin: 10px;">
-              <img src="https://in-exstatic-vivofs.vivo.com/gdHFRinHEMrj3yPG/1711104354021/f91329d65e0c0558e4b1964cc5d080dd.jpg" alt="Additional Image" style="width: 100%;height:450px; border-radius: 5px;">
+              <img src="https://static.vecteezy.com/system/resources/previews/002/311/421/original/back-to-school-sale-promotion-poster-with-shopping-cart-vector.jpg" alt="Additional Image" style="width: 100%;height:450px; border-radius: 5px;">
             </div>
       
             <p style="color: #4CAF50; letter-spacing: 7px;  font-weight: bold;">The eKart Team</p>
@@ -116,7 +115,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Edit a user by ID
 // Edit a user by ID
 exports.editUser = async (req, res) => {
   try {
@@ -158,7 +156,7 @@ exports.editUser = async (req, res) => {
         // Move the image file to the designated directory
         await imageFile.mv(uploadPath);
 
-        // Remove old images if exist
+  
         if (existingUser.image && existingUser.image.length > 0) {
           for (const oldImage of existingUser.image) {
             const oldImagePath = path.join(
@@ -209,7 +207,7 @@ exports.editUser = async (req, res) => {
 };
 
 // .select('-password'); // Exclude the password field
-// the users password will bie use this
+
 
 // Get all users
 exports.getAllUsers = async (req, res) => {

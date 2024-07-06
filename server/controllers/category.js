@@ -58,69 +58,96 @@ exports.createCategory = async (req, res) => {
 // Edit a category by ID
 exports.editCategory = async (req, res) => {
   try {
-    const { name, description,  } = req.body;
-
-    // Check if an image is present in the request
-    const imageFile = req.files && req.files.image;
+    const { name, description } = req.body;
 
     // Check if the required fields are present
     if (!name || !description) {
-      return res.status(400).json({ message: 'Required fields are missing' });
+      return res.status(400).json({ message: "Required fields are missing" });
     }
 
-    let updatedData = { name, description,  };
+    // Check if a category with the same name already exists (exclude the current category)
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory && existingCategory._id.toString() !== req.params.id) {
+      return res.status(400).json({ message: "Category name already exists" });
+    }
 
-    // If an image is provided, handle it
+    // Update the category data
+    const updatedData = { name, description };
+
+    const imageFile = req.files && req.files.image;
+
     if (imageFile) {
       // Check image size
       if (imageFile.size > 3 * 1024 * 1024) {
-        return res.status(400).json({ message: 'Image size exceeds the 3MB limit' });
+        return res
+          .status(400)
+          .json({ message: "Image size exceeds the 3MB limit" });
       }
 
-      // Generate a unique filename
-      const uniqueFileName = `${Date.now()}_${imageFile.name}`;
-      const uploadPath = path.join(__dirname, '../uploads/categeory', uniqueFileName);
+      // Generate a unique filename for the image
+      const uniqueImageFileName = `${Date.now()}_${imageFile.name}`;
+      const uploadPath = path.join(
+        __dirname,
+        "../uploads/categeory",
+        uniqueImageFileName
+      );
 
       try {
-        // Move the new image file to the designated directory
+        // Move the image file to the designated directory
         await imageFile.mv(uploadPath);
 
-        // Update the image filename in the data
-        updatedData.image = uniqueFileName;
-
-        // Find the existing category to get the old image filename
+        // Find the existing category to get the old image filename if exists
         const existingCategory = await Category.findById(req.params.id);
-        if (existingCategory) {
-          const oldImageFilename = existingCategory.image;
-
-          // Remove the old image file
-          const oldImagePath = path.join(__dirname, '../uploads/categeory', oldImageFilename);
-          fs.unlinkSync(oldImagePath);
+        if (existingCategory && existingCategory.image) {
+          // Remove the old image file(s) if they exist
+          if (Array.isArray(existingCategory.image)) {
+            // Handle array of images
+            for (const oldImage of existingCategory.image) {
+              const oldImagePath = path.join(
+                __dirname,
+                "../uploads/categeory",
+                oldImage
+              );
+              if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+              }
+            }
+          } else {
+            // Handle single image (string)
+            const oldImagePath = path.join(
+              __dirname,
+              "../uploads/categeory",
+              existingCategory.image
+            );
+            if (fs.existsSync(oldImagePath)) {
+              fs.unlinkSync(oldImagePath);
+            }
+          }
         }
+
+        // Update the image filename in the data
+        updatedData.image = uniqueImageFileName;
       } catch (err) {
-        console.error('Error moving the image file:', err);
-        return res.status(500).json({ message: 'Internal server error' });
+        console.error("Error moving the image file:", err);
+        return res.status(500).json({ message: "Internal server error" });
       }
     }
 
-    // If no new image is provided, keep the existing image
-    if (!imageFile && !updatedData.image) {
-      const existingCategory = await Category.findById(req.params.id);
-      if (existingCategory) {
-        updatedData.image = existingCategory.image;
-      }
-    }
+    // Update the category in the database
+    const updatedCategory = await Category.findByIdAndUpdate(
+      req.params.id,
+      updatedData,
+      { new: true }
+    );
 
-    // Update the category, including the image if provided
-    const updatedCategory = await Category.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!updatedCategory) {
-      return res.status(404).json({ message: 'Category not found' });
+      return res.status(404).json({ message: "Category not found" });
     }
 
     res.json(updatedCategory);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

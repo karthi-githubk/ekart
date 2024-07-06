@@ -6,7 +6,6 @@ import {
   CardContent,
   Typography,
   Button,
-  TablePagination,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,6 +19,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import EkartAdminBar from "../navbars/EkartAdminBar";
+import Stack from "@mui/material/Stack";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
 
 import {
   fetchProducts,
@@ -40,11 +42,11 @@ function ProductControl() {
   const products = useSelector(selectProducts);
   const categories = useSelector(selectCategories);
   const loading = useSelector(selectProductsLoading);
-  const [expanded, setExpanded] = useState(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1); 
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [expandedProductId, setExpandedProductId] = useState(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -72,13 +74,8 @@ function ProductControl() {
     setDeleteDialogOpen(false);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleChangePage = (event, value) => {
+    setPage(value);
   };
 
   const truncateDescription = (description, maxLength) => {
@@ -86,6 +83,20 @@ function ProductControl() {
       ? `${description.substring(0, maxLength)}...`
       : description;
   };
+
+  const toggleExpand = (productId) => {
+    setExpandedProductId(
+      expandedProductId === productId ? null : productId
+    );
+  };
+
+  const totalPages = Math.ceil(products.length / rowsPerPage);
+
+  const startIndex = (page - 1) * rowsPerPage;
+  const slicedProducts = products.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   return (
     <EkartAdminBar
@@ -118,112 +129,112 @@ function ProductControl() {
           </Typography>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-            {products
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((product) => {
-                // Find the category object by ID
-                const category = categories.find(
-                  (cat) => cat._id === product.category
-                );
-
-                return (
-                  <Card
-                    key={product._id}
-                    style={{ width: "320px", margin: "10px" }}
+            {slicedProducts.map((product) => (
+              <Card
+                key={product._id}
+                style={{ width: "320px", margin: "10px" }}
+              >
+                <CardContent>
+                  <Typography
+                    variant="h6"
+                    sx={{ textTransform: "uppercase" }}
                   >
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        sx={{ textTransform: "uppercase" }}
-                      >
-                        Category: {category ? category.name : "Unknown"}
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        sx={{ textTransform: "uppercase" }}
-                      >
-                        Product Name: {product.name}
-                      </Typography>
-                      <img
-                        src={`http://localhost:5005/uploads/product/${product.image[0]}`}
-                        alt={product.name}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "150px",
-                          marginBottom: "10px",
-                        }}
+                    Product Name: {product.name}
+                  </Typography>
+                  <img
+                    src={`http://localhost:5005/uploads/product/${product.image[0]}`}
+                    alt={product.name}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      marginBottom: "10px",
+                    }}
+                  />
+
+                  <Typography variant="body2">
+                    Price: {product.price}
+                  </Typography>
+                  <Typography variant="body2">
+                    Stock: {product.stock}
+                  </Typography>
+
+                  <Typography variant="body1">
+                    Description:{" "}
+                    {expandedProductId === product._id
+                      ? product.description
+                      : truncateDescription(product.description, 50)}
+                  </Typography>
+                  {product.description.length > 50 && (
+                    <Button onClick={() => toggleExpand(product._id)}>
+                      {expandedProductId === product._id
+                        ? "Show less"
+                        : "Show more"}
+                    </Button>
+                  )}
+                  <Typography variant="body2">
+                    Ratings: {product.ratings}
+                  </Typography>
+                  <div>
+                    Tags:{" "}
+                    {product.tags.map((tag, index) => (
+                      <Chip
+                        key={index}
+                        label={tag}
+                        avatar={<Avatar>#</Avatar>}
+                        sx={{ marginRight: 1 }}
                       />
+                    ))}
+                  </div>
 
-                      <Typography variant="body2">
-                        Price: {product.price}
-                      </Typography>
-                      <Typography variant="body2">
-                        Stock: {product.stock}
-                      </Typography>
-
-                      {/* Additional fields */}
-                      <Typography variant="body1">
-                        Description:{" "}
-                        {expanded
-                          ? product.description
-                          : truncateDescription(product.description, 50)}
-                      </Typography>
-                      {product.description.length > 50 && (
-                        <Button onClick={() => setExpanded(!expanded)}>
-                          {expanded ? "Show less" : "Show more"}
-                        </Button>
-                      )}
-                      <Typography variant="body2">
-                        Ratings: {product.ratings}
-                      </Typography>
-                      <div>
-                        Tags:{" "}
-                        {product.tags.map((tag, index) => (
-                          <Chip
-                            key={index}
-                            label={tag}
-                            avatar={<Avatar>#</Avatar>}
-                            sx={{ marginRight: 1 }}
-                          />
-                        ))}
-                      </div>
-
-                      <div style={{ marginTop: "10px" }}>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<EditIcon />}
-                          sx={{ marginRight: 1 }}
-                          onClick={() =>
-                            navigate(`/ekart/product/edit/${product._id}`)
-                          }
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          sx={{ marginLeft: 1 }}
-                          onClick={() => handleDeleteProduct(product._id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+                  <div style={{ marginTop: "10px" }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<EditIcon />}
+                      sx={{ marginRight: 1 }}
+                      onClick={() =>
+                        navigate(`/ekart/product/edit/${product._id}`)
+                      }
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      sx={{ marginLeft: 1 }}
+                      onClick={() => handleDeleteProduct(product._id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-          <TablePagination
-            rowsPerPageOptions={[4, 8, 16]}
-            component="div"
-            count={products.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+
+          {/* Pagination */}
+          <Stack spacing={2} mt={2}>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handleChangePage}
+              renderItem={(item) => (
+                <PaginationItem
+                  {...item}
+                  sx={{
+                    "&.Mui-selected": {
+                      backgroundColor: "orange",
+                      color: "white",
+                    },
+                    "&.Mui-selected:hover": {
+                      backgroundColor: "darkorange",
+                    },
+                  }}
+                />
+              )}
+            />
+          </Stack>
 
           <Dialog open={deleteDialogOpen} onClose={handleCancelDelete}>
             <DialogTitle sx={{ color: "red" }}>Confirm Delete</DialogTitle>

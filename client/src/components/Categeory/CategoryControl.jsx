@@ -6,12 +6,12 @@ import {
   CardContent,
   Typography,
   Button,
-  TablePagination,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,12 +24,15 @@ import {
 } from "../redux/slices/category/category";
 import { useNavigate } from "react-router-dom";
 import EkartAdminBar from "../navbars/EkartAdminBar";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
+import Stack from "@mui/material/Stack";
 
 function CategoryControl() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const categories = useSelector(selectCategories);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1); // Current page state
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
@@ -57,14 +60,10 @@ function CategoryControl() {
     setDeleteDialogOpen(false);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleChangePage = (event, value) => {
+    setPage(value);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const truncateDescription = (description, maxLength) => {
     return description.length > maxLength
@@ -79,6 +78,16 @@ function CategoryControl() {
       expandedCategoryId === categoryId ? null : categoryId
     );
   };
+
+  // Pagination variables
+  const totalPages = Math.ceil(categories.length / rowsPerPage);
+
+  // Slice categories based on pagination
+  const startIndex = (page - 1) * rowsPerPage;
+  const slicedCategories = categories.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   return (
     <EkartAdminBar
@@ -110,82 +119,96 @@ function CategoryControl() {
             Categories
           </Typography>
 
-          <Paper elevation={3} style={{ padding: "2px",  }}>
+          <Paper elevation={3} style={{ padding: "2px" }}>
             <div style={{ display: "flex", flexWrap: "wrap" }}>
-              {categories
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((category) => (
-                  <Card
-                    key={category._id}
-                    style={{ width: "300px", margin: "10px" }}
-                  >
-                    <CardContent>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          textTransform: "uppercase",
-                          textAlign: "center",
-                        }}
-                      >
-                        {category.name}
-                      </Typography>
-                      <img
-                        src={`http://localhost:5005/uploads/categeory/${category.image[0]}`}
-                        alt={category.name}
-                        style={{
-                          maxWidth: "100%",
-                          maxHeight: "150px",
-                          marginBottom: "10px",
-                        }}
-                      />
-                      <Typography variant="body1">
-                        Description:{" "}
+              {slicedCategories.map((category) => (
+                <Card
+                  key={category._id}
+                  style={{ width: "300px", margin: "10px" }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        textTransform: "uppercase",
+                        textAlign: "center",
+                      }}
+                    >
+                      {category.name}
+                    </Typography>
+                    <img
+                      src={`http://localhost:5005/uploads/categeory/${category.image[0]}`}
+                      alt={category.name}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "150px",
+                        marginBottom: "10px",
+                      }}
+                    />
+                    <Typography variant="body1">
+                      Description:{" "}
+                      {expandedCategoryId === category._id
+                        ? category.description
+                        : truncateDescription(category.description, 50)}
+                    </Typography>
+                    {category.description.length > 50 && (
+                      <Button onClick={() => toggleExpand(category._id)}>
                         {expandedCategoryId === category._id
-                          ? category.description
-                          : truncateDescription(category.description, 50)}
-                      </Typography>
-                      {category.description.length > 50 && (
-                        <Button onClick={() => toggleExpand(category._id)}>
-                          {expandedCategoryId === category._id
-                            ? "Show less"
-                            : "Show more"}
-                        </Button>
-                      )}
-                      <div style={{ marginTop: "10px" }}>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          startIcon={<EditIcon />}
-                          sx={{ marginRight: 1 }}
-                          onClick={() =>
-                            navigate(`/ekart/categeory/edit/${category._id}`)
-                          }
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          sx={{ marginLeft: 1 }}
-                          onClick={() => handleDeleteCategory(category._id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                          ? "Show less"
+                          : "Show more"}
+                      </Button>
+                    )}
+                    <div style={{ marginTop: "10px" }}>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<EditIcon />}
+                        sx={{ marginRight: 1 }}
+                        onClick={() =>
+                          navigate(`/ekart/categeory/edit/${category._id}`)
+                        }
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        sx={{ marginLeft: 1 }}
+                        onClick={() => handleDeleteCategory(category._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            <TablePagination
-              rowsPerPageOptions={[4, 8, 16]}
-              component="div"
-              count={categories.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            {/* Pagination */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', }}>
+
+            <Stack spacing={2} mt={1} mb={1}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handleChangePage}
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "orange",
+                        color: "white",
+                      },
+                      "&.Mui-selected:hover": {
+                        backgroundColor: "darkorange",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </Stack>
+            </Box>
           </Paper>
           <Dialog open={deleteDialogOpen} onClose={handleCancelDelete}>
             <DialogTitle sx={{ color: "red" }}>Confirm Delete</DialogTitle>

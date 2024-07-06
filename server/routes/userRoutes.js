@@ -9,7 +9,7 @@ const {
   SignIn
 } = require('../controllers/user');
 
-// Define routes
+
 router.post('/users/create', createUser);
 router.put('/users/edit/:id', editUser);
 router.get('/users/getAll', getAllUsers);

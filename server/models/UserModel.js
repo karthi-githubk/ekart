@@ -13,8 +13,6 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// userSchema.methods.isAdmin = function() {
-//   return this.role === 'admin';
-// };
+
 
 module.exports = mongoose.model('User', userSchema);

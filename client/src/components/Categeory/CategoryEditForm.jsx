@@ -60,9 +60,8 @@ const CategoryEditForm = () => {
         setFileTypeError("Only PNG, JPG, or JPEG files are allowed");
       } else {
         setFileTypeError("");
-        formik.setFieldValue("image", acceptedFiles[0]);
-        const names = acceptedFiles.map((file) => file.name);
-        setSelectedImageNames(names);
+        formik.setFieldValue("image", acceptedFiles[0]); // Set the image in formik state
+        setSelectedImageNames(acceptedFiles.map((file) => file.name));
       }
     },
   });
@@ -71,15 +70,21 @@ const CategoryEditForm = () => {
     initialValues: {
       name: selectedCategory?.name || "",
       description: selectedCategory?.description || "",
-    
+      image: null,
     },
     validationSchema,
     enableReinitialize: true,
 
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      if (values.image) {
+        formData.append("image", values.image);
+      }
+
       try {
-        await dispatch(editCategory({ id, updatedCategory: values }));
+        await dispatch(editCategory({ id, updatedCategory: formData }));
         resetForm();
         handleSnackbarOpen("success", "Category updated successfully!");
       } catch (error) {
@@ -93,6 +98,19 @@ const CategoryEditForm = () => {
     dispatch(fetchCategoryById(id));
    
   }, [dispatch, id]);
+
+
+  useEffect(() => {
+    if (isSuccess) {
+      formik.resetForm();
+
+      setTimeout(() => {
+        navigate("/ekart/Categeorys");
+        dispatch(resetCategories());
+      }, 3000);
+    }
+  }, [isSuccess, dispatch, navigate]);
+  
 
   useEffect(() => {
     if (selectedCategory) {
@@ -112,16 +130,7 @@ const CategoryEditForm = () => {
   }, [selectedCategory,]);
   
 
-  useEffect(() => {
-    if (isSuccess) {
-      formik.resetForm();
 
-      setTimeout(() => {
-        navigate("/category");
-        dispatch(resetCategories());
-      }, 3000);
-    }
-  }, [isSuccess, dispatch, navigate]);
 
   const handleSnackbarOpen = (severity, message) => {
     setSnackbarSeverity(severity);

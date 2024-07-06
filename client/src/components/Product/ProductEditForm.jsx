@@ -59,6 +59,8 @@ const ProductEditForm = () => {
       tags: Yup.array()
       .of(Yup.string())
       .required("At least one tag is required"),
+      tags: Yup.string().required("At least one tag is required"),
+
   });
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -99,7 +101,18 @@ const ProductEditForm = () => {
 
     onSubmit: async (values, { resetForm }) => {
       try {
-        await dispatch(editProduct({ id, updatedProduct: values }));
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("description", values.description);
+        formData.append("image", values.image);
+        formData.append("category", values.category);
+        formData.append("price", values.price);
+        formData.append("stock", values.stock);
+        formData.append("ratings", values.ratings);
+        formData.append("tags", values.tags);
+
+
+        await dispatch(editProduct({ id, updatedProduct: formData }));
         resetForm();
         handleSnackbarOpen("success", "Product updated successfully!");
       } catch (error) {

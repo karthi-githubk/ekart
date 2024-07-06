@@ -66,10 +66,10 @@ exports.createProduct = async (req, res) => {
 
 exports.editProduct = async (req, res) => {
   try {
-    const { name, category, price, description, stock,ratings, tags } = req.body;
+    const { name, category, price, description, stock, ratings, tags } = req.body;
 
     // Check if an image is present in the request
-    const imageFiles = req.files && req.files.image ? (Array.isArray(req.files.image) ? req.files.image : [req.files.image]) : [];
+    const imageFile = req.files && req.files.image;
 
     // Check if the required fields are present
     if (!name || !description || !price || !ratings || !stock) {
@@ -86,29 +86,59 @@ exports.editProduct = async (req, res) => {
       tags
     };
 
-    // If images are provided, handle them
-    if (imageFiles.length > 0) {
-      for (const imageFile of imageFiles) {
-        // Check image size
-        if (imageFile.size > 3 * 1024 * 1024) {
-          return res.status(400).json({ message: "Image size exceeds the 3MB limit" });
+    // If an image is provided, handle it
+    if (imageFile) {
+      // Check image size
+      if (imageFile.size > 3 * 1024 * 1024) {
+        return res.status(400).json({ message: "Image size exceeds the 3MB limit" });
+      }
+
+      // Generate a unique filename for the image
+      const uniqueImageFileName = `${Date.now()}_${imageFile.name}`;
+      const uploadPath = path.join(__dirname, "../uploads/product", uniqueImageFileName);
+
+      try {
+        // Move the image file to the designated directory
+        await imageFile.mv(uploadPath);
+
+        // Find the existing product to get the old image filename if it exists
+        const existingProduct = await Product.findById(req.params.id);
+        if (existingProduct && existingProduct.image) {
+          // Remove the old image file(s) if they exist
+          if (Array.isArray(existingProduct.image)) {
+            // Handle array of images
+            for (const oldImage of existingProduct.image) {
+              const oldImagePath = path.join(
+                __dirname,
+                "../uploads/product",
+                oldImage
+              );
+              if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath);
+              }
+            }
+          } else {
+            // Handle single image (string)
+            const oldImagePath = path.join(
+              __dirname,
+              "../uploads/product",
+              existingProduct.image
+            );
+            if (fs.existsSync(oldImagePath)) {
+              fs.unlinkSync(oldImagePath);
+            }
+          }
         }
 
-        // Generate a unique filename
-        const uniqueImageFileName = `${Date.now()}_${imageFile.name}`;
-        const uploadPath = path.join(__dirname, "../uploads/product", uniqueImageFileName);
-
-        try {
-          // Move the image file to the designated directory
-          await imageFile.mv(uploadPath);
-          updatedData.image = [...(updatedData.image || []), uniqueImageFileName];
-        } catch (err) {
-          console.error("Error moving the image file:", err);
-          return res.status(500).json({ message: "Internal server error" });
-        }
+        // Update the image filename in the data
+        updatedData.image = uniqueImageFileName;
+      } catch (err) {
+        console.error("Error moving the image file:", err);
+        return res.status(500).json({ message: "Internal server error" });
       }
     }
 
+    // Update the product in the database
     const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });

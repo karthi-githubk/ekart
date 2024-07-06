@@ -82,7 +82,7 @@ const CategoryForm = () => {
 
       setTimeout(() => {
         setOpenSnackbar(false);
-        navigate("/category");
+        navigate("/ekart/Categeorys");
         dispatch(resetCategories());
       }, 3000);
     }
@@ -105,7 +105,7 @@ const CategoryForm = () => {
           style={{ marginTop: "40px" }}
         >
           <div>
-            <Link to="/category">
+            <Link to="/ekart/Categeorys">
               <Button
                 variant="contained"
                 color="error"

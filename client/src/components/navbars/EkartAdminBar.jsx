@@ -16,26 +16,22 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { PersonAdd, Logout } from "@mui/icons-material";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import { Badge, Menu, MenuItem, Tooltip } from "@mui/material";
+import {  Menu, MenuItem, Tooltip } from "@mui/material";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 import CategoryIcon from "@mui/icons-material/Category";
 import PhoneCallbackIcon from '@mui/icons-material/PhoneCallback';
 import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
-
-
-
 import logo from "../images/Ekart-New-Logo.jpg";
 import "../navbars/Navbar.css";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-
 import { useCookies } from "react-cookie";
-import { useDispatch, useSelector } from "react-redux";
+import { selectUserInfo } from "../redux/slices/user/signin";
+import { useSelector } from "react-redux";
 
-import { useState, useEffect } from "react";
-import PendingActionsIcon from '@mui/icons-material/PendingActions';
+
 
 const drawerWidth = 240;
 
@@ -110,8 +106,8 @@ export default function EkartAdminBar({ Content }) {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(false);
   const opens = Boolean(anchorEl);
+  const userInfo = useSelector(selectUserInfo);
 
-  const dispatch = useDispatch();
  
 
   const handleClose = () => {
@@ -144,6 +140,7 @@ export default function EkartAdminBar({ Content }) {
     // Navigate to the logout route
     navigate("/");
   };
+  
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -230,12 +227,14 @@ export default function EkartAdminBar({ Content }) {
           >
            
 
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
+           {userInfo ? (
+             <MenuItem onClick={handleLogout}>
+             <ListItemIcon>
+               <LogoutIcon fontSize="small" />
+             </ListItemIcon>
+             Logout
+           </MenuItem>
+          ) : null}
           </Menu>
         </Toolbar>
       </AppBar>
@@ -328,7 +327,7 @@ export default function EkartAdminBar({ Content }) {
 
 
           <ListItem
-            key="Categeorys"
+            key="categories"
             disablePadding
             sx={{ display: "block", paddingTop: 2 }}
           >
@@ -353,7 +352,7 @@ export default function EkartAdminBar({ Content }) {
                 <CategoryIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Categeorys"
+                primary="categories"
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>

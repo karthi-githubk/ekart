@@ -51,7 +51,7 @@ app.use(
   express.static(path.join(__dirname, "uploads/product"))
 );
 
-//Home route
+
 app.get("/", (req, res) => res.send("API Running"));
 
 

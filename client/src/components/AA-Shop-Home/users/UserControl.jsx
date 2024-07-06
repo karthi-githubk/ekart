@@ -25,12 +25,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Box,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import EkartAdminBar from "../../navbars/EkartAdminBar";
+import { Pagination, PaginationItem } from "@mui/material";
+
 
 const UserControl = () => {
   const navigate = useNavigate();
@@ -58,6 +61,11 @@ const UserControl = () => {
     setPage(0);
   };
 
+  const totalPages = Math.ceil(
+    users.filter((user) => user.role === selectedRoleFilter).length /
+      rowsPerPage
+  );
+
   const handleDeleteClick = (userId) => {
     setSelectedUserId(userId);
     setDeleteConfirmationDialogOpen(true);
@@ -78,6 +86,11 @@ const UserControl = () => {
   const handleRoleFilterChange = (event) => {
     setSelectedRoleFilter(event.target.value);
   };
+
+  const slicedUsers = users
+  .filter((user) => user.role === selectedRoleFilter)
+  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
 
   return (
     <EkartAdminBar
@@ -195,18 +208,27 @@ const UserControl = () => {
                     ))}
                 </TableBody>
               </Table>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={
-                  users.filter((user) => user.role === selectedRoleFilter)
-                    .length
-                }
-                rowsPerPage={rowsPerPage}
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Pagination
+                count={totalPages}
                 page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                onChange={handleChangePage}
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    sx={{
+                      "&.Mui-selected": {
+                        backgroundColor: "orange",
+                        color: "white",
+                      },
+                      "&.Mui-selected:hover": {
+                        backgroundColor: "darkorange",
+                      },
+                    }}
+                  />
+                )}
               />
+            </Box>
             </TableContainer>
             <Dialog
               open={deleteConfirmationDialogOpen}
