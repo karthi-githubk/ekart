@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const backendAPI = 'http://localhost:5005';
+const backendAPI = 'https://ekart-57l0.onrender.com';
 
 
 const initialState = {
