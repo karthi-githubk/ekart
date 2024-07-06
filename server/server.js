@@ -23,7 +23,7 @@ connectDB();
 app.use(express.json({ extended: false })); // for taking data from post request(body-parser)
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["https://ekart-chi.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     exposedHeaders: ["Content-Length", "Authorization"],
