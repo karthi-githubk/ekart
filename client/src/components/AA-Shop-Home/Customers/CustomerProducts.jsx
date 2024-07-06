@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+awwwwimport React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
@@ -181,7 +181,7 @@ function CustomerProduct() {
                   label={
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Avatar
-                        src={`http://localhost:5005/uploads/categeory/${category.image[0]}`}
+                        src={`https://ekart-57l0.onrender.com/uploads/categeory/${category.image[0]}`}
                         alt={category.name}
                         sx={{ marginRight: 1, width: 25, height: 25 }}
                       />
