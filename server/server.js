@@ -25,7 +25,7 @@ app.use(
   cors({
     origin: ["https://ekart-chi.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+   
     exposedHeaders: ["Content-Length", "Authorization"],
   })
 );
