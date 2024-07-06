@@ -23,9 +23,9 @@ connectDB();
 app.use(express.json({ extended: false })); // for taking data from post request(body-parser)
 app.use(
   cors({
-    origin: ["https://ekart-chi.vercel.app"],
+    origin: ["https://ekart-chi.vercel.app","https://ekart-karthik-s-projects-39275d61.vercel.app/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-   
+   credentials: true,
     exposedHeaders: ["Content-Length", "Authorization"],
   })
 );
