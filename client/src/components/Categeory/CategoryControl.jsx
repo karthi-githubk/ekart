@@ -137,7 +137,7 @@ function CategoryControl() {
                       {category.name}
                     </Typography>
                     <img
-                      src={`http://localhost:5005/uploads/categeory/${category.image[0]}`}
+                      src={`https://ekart-57l0.onrender.com/uploads/categeory/${category.image[0]}`}
                       alt={category.name}
                       style={{
                         maxWidth: "100%",
