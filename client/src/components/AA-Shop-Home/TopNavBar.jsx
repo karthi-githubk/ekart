@@ -22,6 +22,7 @@ import { selectWishlist } from "../redux/slices/Items/wishlist";
 import { selectCartItems } from "../redux/slices/Items/cart";
 import { useCookies } from "react-cookie";
 import { resetSignIn, selectUserInfo } from "../redux/slices/user/signin";
+import PaidIcon from '@mui/icons-material/Paid';
 
 function TopNavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -158,7 +159,7 @@ function TopNavBar() {
                     >
                       <Avatar
                         sx={{ width: 32, height: 32 }}
-                        src={`http://localhost:5005/uploads/users/${userInfo?.user?.image[0]}`}
+                        src={`https://ekart-57l0.onrender.com/uploads/users/${userInfo?.user?.image[0]}`}
                       />
                     </IconButton>
                   </Tooltip>
@@ -185,6 +186,15 @@ function TopNavBar() {
                     >
                       <AccountCircleIcon fontSize="small" />
                       Edit Profile
+                    </MenuItem>
+
+                    <MenuItem
+                      onClick={() =>
+                        navigate(`/payment-success`)
+                      }
+                    >
+                      <PaidIcon fontSize="small" />
+                     My Orders
                     </MenuItem>
 
                     <MenuItem onClick={handleLogout}>
