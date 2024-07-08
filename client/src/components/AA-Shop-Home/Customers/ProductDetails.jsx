@@ -100,7 +100,7 @@ function ProductDetails() {
               <CardMedia
                 component="img"
                 height="auto"
-                image={`http://localhost:5005/uploads/product/${productImage}`}
+                image={`https://ekart-57l0.onrender.com/uploads/product/${productImage}`}
                 alt={productDetails.name}
                 style={{
                   objectFit: "contain",
