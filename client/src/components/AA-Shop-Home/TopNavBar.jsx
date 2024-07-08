@@ -22,7 +22,7 @@ import { selectWishlist } from "../redux/slices/Items/wishlist";
 import { selectCartItems } from "../redux/slices/Items/cart";
 import { useCookies } from "react-cookie";
 import { resetSignIn, selectUserInfo } from "../redux/slices/user/signin";
-import PaidIcon from '@mui/icons-material/Paid';
+import PaidIcon from "@mui/icons-material/Paid";
 
 function TopNavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -55,7 +55,6 @@ function TopNavBar() {
     navigate("/login");
   };
 
- 
   const handleLogout = () => {
     handleCloseNavMenu();
     removeCookie("token", { path: "/" });
@@ -158,12 +157,9 @@ function TopNavBar() {
                       sx={{ p: 0, mr: 2 }}
                       onClick={() => navigate(`/payment-success`)}
                     >
-                      <Badge badgeContent={cartItems.length} color="secondary">
-                        <PaidIcon style={{ color: "white" }} />
-                      </Badge>
+                      <PaidIcon style={{ color: "white" }} />
                     </IconButton>
                   </Tooltip>
-
 
                   <Tooltip title="Open settings">
                     <IconButton
