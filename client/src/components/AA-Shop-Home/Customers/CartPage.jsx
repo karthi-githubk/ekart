@@ -176,7 +176,7 @@ function CartPage() {
                       <TableRow key={item._id}>
                         <TableCell>
                           <img
-                            src={`http://localhost:5005/uploads/product/${item.image[0]}`}
+                               src={`https://ekart-57l0.onrender.com/uploads/product/${item.image[0]}`}
                             alt={item.name}
                             style={{
                               maxWidth: "100%",
