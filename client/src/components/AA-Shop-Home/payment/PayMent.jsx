@@ -29,7 +29,12 @@ const Payment = () => {
   // Show loading indicator if payment status is pending
   if (paymentStatus === 'pending') {
     return (
-  
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <CircularProgress />
+        <Typography variant="h5" style={{ marginTop: '20px' }}>
+          Payment processing...
+        </Typography>
+      </div>
     );
   }
 
