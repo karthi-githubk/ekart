@@ -152,6 +152,19 @@ function TopNavBar() {
                       </Badge>
                     </IconButton>
                   </Tooltip>
+
+                  <Tooltip title="My Orders">
+                    <IconButton
+                      sx={{ p: 0, mr: 2 }}
+                      onClick={() => navigate(`/payment-success`)}
+                    >
+                      <Badge badgeContent={cartItems.length} color="secondary">
+                        <PaidIcon style={{ color: "white" }} />
+                      </Badge>
+                    </IconButton>
+                  </Tooltip>
+
+
                   <Tooltip title="Open settings">
                     <IconButton
                       onClick={handleOpenUserMenu}
@@ -186,15 +199,6 @@ function TopNavBar() {
                     >
                       <AccountCircleIcon fontSize="small" />
                       Edit Profile
-                    </MenuItem>
-
-                    <MenuItem
-                      onClick={() =>
-                        navigate(`/payment-success`)
-                      }
-                    >
-                      <PaidIcon fontSize="small" />
-                     My Orders
                     </MenuItem>
 
                     <MenuItem onClick={handleLogout}>
