@@ -94,7 +94,7 @@ function WishlistPage() {
                   <CardContent sx={{ textAlign: "center" }}>
                     <Typography variant="h6">{product.name}</Typography>
                     <img
-                      src={`http://localhost:5005/uploads/product/${product.image[0]}`}
+                        src={`https://ekart-57l0.onrender.com/uploads/product/${item.image[0]}`}
                       alt={product.name}
                       style={{
                         width: "100%",
