@@ -50,7 +50,7 @@ const Payment = () => {
             <Grid item key={item._id}>
               <Card style={{ maxWidth: 300 }}>
                 <img
-                  src={`http://localhost:5005/uploads/product/${item.image[0]}`}
+                  image={`https://ekart-57l0.onrender.com/uploads/product/${productImage}`}
                   alt={item.name}
                   style={{
                     width: '100%',
